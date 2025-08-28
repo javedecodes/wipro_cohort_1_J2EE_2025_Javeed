@@ -1,7 +1,5 @@
 package com.worknest.controller;
 
-
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,53 +20,61 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
-
-    // Show Login Page
-    @GetMapping("/login")
-    public String showLoginPage() {
-        return "auth/login";
+    
+    
+    
+    @GetMapping("/ping")
+    public String ping() {
+        return "auth/login"; 
     }
 
-    // Process Login
+    /** Show Login Page */
+    @GetMapping("/login")
+    public String loginPage() {
+        return "auth/login"; // JSP: /WEB-INF/views/auth/login.jsp
+    }
+
+    /** Handle Login */
     @PostMapping("/login")
-    public String login(@RequestParam("email") String email,
-                        @RequestParam("password") String password,
+    public String login(@RequestParam String username,
+                        @RequestParam String password,
                         HttpSession session,
                         Model model) {
-        User user = userService.login(email, password);
-        if (user != null) {
-            session.setAttribute("loggedInUser", user);
 
-            // Redirect based on role
+        User user = userService.login(username, password);
+
+        if (user != null) {
+            session.setAttribute("currentUser", user);
             if ("ADMIN".equalsIgnoreCase(user.getRole())) {
                 return "redirect:/admin/dashboard";
             } else {
-                return "redirect:/user/tasks/" + user.getId();
+                return "redirect:/user/dashboard?userId=" + user.getId();
             }
         } else {
-            model.addAttribute("error", "Invalid email or password");
+            model.addAttribute("error", "Invalid username or password");
             return "auth/login";
         }
     }
 
-    // Show Register Page
+    /** Show Registration Page */
     @GetMapping("/register")
-    public String showRegisterPage(Model model) {
-        model.addAttribute("user", new User());
-        return "auth/register";
+    public String registerPage() {
+        return "auth/register"; // JSP: /WEB-INF/views/auth/register.jsp
     }
 
-    // Process Registration
+    /** Handle Registration */
     @PostMapping("/register")
-    public String register(@ModelAttribute("user") User user) {
+    public String register(@ModelAttribute User user, Model model) {
+        user.setRole("USER"); // default role
         userService.register(user);
-        return "redirect:/auth/login";
+        model.addAttribute("success", "Registration successful! Please login.");
+        return "auth/login";
     }
 
-    // Logout
+    /** Handle Logout */
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         session.invalidate();
-        return "redirect:/auth/login";
+        return "auth/logout"; // JSP: /WEB-INF/views/auth/logout.jsp
     }
 }

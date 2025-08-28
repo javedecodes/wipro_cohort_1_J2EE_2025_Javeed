@@ -1,9 +1,13 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%
-    // End the session
-    if (session != null) {
-        session.invalidate();
-    }
-    // Redirect back to login page
-    response.sendRedirect("login.jsp");
-%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Logout - WorkNest</title>
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/css/style.css">
+</head>
+<body>
+<div class="container">
+    <h2>You have been logged out.</h2>
+    <p><a href="<%=request.getContextPath()%>/auth/login">Login Again</a></p>
+</div>
+</body>
+</html>

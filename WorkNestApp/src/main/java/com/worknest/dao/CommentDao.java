@@ -1,13 +1,11 @@
 package com.worknest.dao;
 
-
-
-import java.util.List;
 import com.worknest.model.Comment;
+import java.util.List;
 
 public interface CommentDao {
-    void save(Comment comment);
-    Comment findById(int id);
-    List<Comment> findByTaskId(int taskId);  
-    void delete(int id);
+    void save(Comment comment);               // Save or update
+    Comment findById(Long id);                // Optional, for single comment
+    List<Comment> findAll();                  // List all comments
+    List<Comment> findByTaskId(Long taskId);  // Comments for a specific task
 }

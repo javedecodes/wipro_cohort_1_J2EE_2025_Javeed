@@ -3,49 +3,42 @@ package com.worknest.util;
 
 
 import org.hibernate.SessionFactory;
+import org.hibernate.boot.Metadata;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.service.ServiceRegistry;
 
-/**
- * Hibernate Utility class to manage SessionFactory.
- */
 public class HibernateUtil {
 
-    private static SessionFactory sessionFactory;
+    private static final SessionFactory sessionFactory = buildSessionFactory();
 
-    static {
+    private static SessionFactory buildSessionFactory() {
         try {
-            // Load configuration from hibernate.cfg.xml
-            Configuration configuration = new Configuration().configure();
-
-            // Add annotated entity classes (optional if using <mapping> in cfg.xml)
-            configuration.addAnnotatedClass(com.worknest.model.User.class);
-            configuration.addAnnotatedClass(com.worknest.model.Task.class);
-            configuration.addAnnotatedClass(com.worknest.model.Comment.class);
-
-            ServiceRegistry serviceRegistry =
-                    new StandardServiceRegistryBuilder()
-                            .applySettings(configuration.getProperties()).build();
-
-            sessionFactory = configuration.buildSessionFactory(serviceRegistry);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ExceptionInInitializerError("Hibernate initialization failed: " + e);
+            // Create registry
+            StandardServiceRegistry registry = new StandardServiceRegistryBuilder()
+                .configure("hibernate.cfg.xml")
+                .build();
+            
+            // Create MetadataSources
+            MetadataSources sources = new MetadataSources(registry);
+            
+            // Create Metadata
+            Metadata metadata = sources.getMetadataBuilder().build();
+            
+            // Create SessionFactory
+            return metadata.getSessionFactoryBuilder().build();
+            
+        } catch (Exception ex) {
+            System.err.println("Initial SessionFactory creation failed: " + ex);
+            throw new ExceptionInInitializerError(ex);
         }
     }
 
-    /**
-     * Get the global SessionFactory
-     */
     public static SessionFactory getSessionFactory() {
         return sessionFactory;
     }
-
-    /**
-     * Shutdown Hibernate and release resources
-     */
+    
     public static void shutdown() {
         if (sessionFactory != null) {
             sessionFactory.close();

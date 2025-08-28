@@ -5,9 +5,7 @@ import java.util.List;
 
 public interface TaskDao {
     void save(Task task);
-    Task findById(int id);
+    Task findById(Long id);
     List<Task> findAll();
-    List<Task> findByUserId(int userId);
-    void update(Task task);
-    void delete(int id);
+    List<Task> findByUserId(Long userId);
 }

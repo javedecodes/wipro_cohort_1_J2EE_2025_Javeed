@@ -1,47 +1,48 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Manage Users - WorkNest</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/css/style.css">
 </head>
 <body>
+<div class="container">
+    <h2>Manage Users</h2>
 
-<div class="container mt-5">
-    <h2>Users</h2>
-    <a href="add-user.jsp" class="btn btn-primary mb-3">Add User</a>
-    
-    <table class="table table-bordered">
-        <thead class="table-light">
+    <p><a href="<%=request.getContextPath()%>/admin/dashboard">Back to Dashboard</a></p>
+
+    <h3>All Users</h3>
+    <table border="1">
         <tr>
-            <th>ID</th><th>Name</th><th>Email</th><th>Role</th><th>Action</th>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>Role</th>
         </tr>
-        </thead>
-        <tbody>
-        <!-- Example static row -->
+        <%
+            java.util.List users = (java.util.List) request.getAttribute("users");
+            if(users != null){
+                for(Object o: users){
+                    com.worknest.model.User u = (com.worknest.model.User)o;
+        %>
         <tr>
-            <td>1</td>
-            <td>John Doe</td>
-            <td>john@example.com</td>
-            <td>ADMIN</td>
-            <td>
-                <a href="edit-user.jsp?id=1" class="btn btn-warning btn-sm">Edit</a>
-                <a href="delete-user.jsp?id=1" class="btn btn-danger btn-sm">Delete</a>
-            </td>
+            <td><%= u.getId() %></td>
+            <td><%= u.getUsername() %></td>
+            <td><%= u.getEmail() %></td>
+            <td><%= u.getRole() %></td>
         </tr>
-        <tr>
-            <td>2</td>
-            <td>Alice Smith</td>
-            <td>alice@example.com</td>
-            <td>USER</td>
-            <td>
-                <a href="edit-user.jsp?id=2" class="btn btn-warning btn-sm">Edit</a>
-                <a href="delete-user.jsp?id=2" class="btn btn-danger btn-sm">Delete</a>
-            </td>
-        </tr>
-        </tbody>
+        <% } } %>
     </table>
-</div>
 
+    <h3>Add User</h3>
+    <form action="<%=request.getContextPath()%>/admin/addUser" method="post">
+        <label>Username:</label>
+        <input type="text" name="username" required /><br/>
+        <label>Email:</label>
+        <input type="email" name="email" required /><br/>
+        <label>Password:</label>
+        <input type="password" name="password" required /><br/>
+        <button type="submit">Add User</button>
+    </form>
+</div>
 </body>
 </html>

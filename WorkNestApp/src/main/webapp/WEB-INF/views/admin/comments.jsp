@@ -1,47 +1,37 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Comments - WorkNest</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <title>View Comments - WorkNest</title>
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/css/style.css">
 </head>
 <body>
+<div class="container">
+    <h2>All Comments</h2>
+    <p><a href="<%=request.getContextPath()%>/admin/dashboard">Back to Dashboard</a></p>
 
-<div class="container mt-5">
-    <h2>Task Comments</h2>
-
-    <table class="table table-hover">
-        <thead>
+    <table border="1">
         <tr>
             <th>ID</th>
             <th>Task</th>
             <th>User</th>
             <th>Comment</th>
-            <th>Date</th>
+            <th>Created At</th>
         </tr>
-        </thead>
-        <tbody>
         <%
-            // Example hardcoded comments (you can replace with DB logic later)
-            String[][] comments = {
-                {"1", "Design UI", "Alice", "Looks good!", "2025-08-22"},
-                {"2", "Implement Login", "Bob", "Need password encryption", "2025-08-22"},
-                {"3", "Testing", "Charlie", "Found some bugs", "2025-08-21"}
-            };
-
-            for (String[] c : comments) {
+            java.util.List comments = (java.util.List) request.getAttribute("comments");
+            if(comments != null){
+                for(Object o: comments){
+                    com.worknest.model.Comment c = (com.worknest.model.Comment)o;
         %>
         <tr>
-            <td><%= c[0] %></td>
-            <td><%= c[1] %></td>
-            <td><%= c[2] %></td>
-            <td><%= c[3] %></td>
-            <td><%= c[4] %></td>
+            <td><%= c.getId() %></td>
+            <td><%= c.getTask()!=null ? c.getTask().getTitle() : "" %></td>
+            <td><%= c.getUser()!=null ? c.getUser().getUsername() : "" %></td>
+            <td><%= c.getContent() %></td>
+            <td><%= c.getCreatedAt() %></td>
         </tr>
-        <% } %>
-        </tbody>
+        <% } } %>
     </table>
 </div>
-
 </body>
 </html>

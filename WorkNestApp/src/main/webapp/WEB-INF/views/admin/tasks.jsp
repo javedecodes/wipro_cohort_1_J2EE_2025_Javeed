@@ -1,27 +1,55 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Task Details - WorkNest</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <title>Manage Tasks - WorkNest</title>
+    <link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/resources/css/style.css">
 </head>
 <body>
+<div class="container">
+    <h2>Manage Tasks</h2>
+    <p><a href="<%=request.getContextPath()%>/admin/dashboard">Back to Dashboard</a></p>
 
-<div class="container mt-5">
-    <h2>Task Details</h2>
-    <div class="card shadow p-4">
-        <h4>Task: Design Homepage</h4>
-        <p><strong>Status:</strong> IN_PROGRESS</p>
-        <p><strong>Assigned To:</strong> John Doe</p>
-        <p><strong>Description:</strong> Create a responsive homepage using Bootstrap and JSP.</p>
-    </div>
+    <h3>All Tasks</h3>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>User</th>
+            <th>Status</th>
+            <th>Start Date</th>
+            <th>Due Date</th>
+        </tr>
+        <%
+            java.util.List tasks = (java.util.List) request.getAttribute("tasks");
+            if(tasks != null){
+                for(Object o: tasks){
+                    com.worknest.model.Task t = (com.worknest.model.Task)o;
+        %>
+        <tr>
+            <td><%= t.getId() %></td>
+            <td><%= t.getTitle() %></td>
+            <td><%= t.getAssignedUser()!=null ? t.getAssignedUser().getUsername() : "" %></td>
+            <td><%= t.getStatus() %></td>
+            <td><%= t.getStartDate() %></td>
+            <td><%= t.getDueDate() %></td>
+        </tr>
+        <% } } %>
+    </table>
 
-    <h4 class="mt-4">Comments</h4>
-    <ul class="list-group">
-        <li class="list-group-item">Alice: Looking good so far! (2025-08-22)</li>
-        <li class="list-group-item">Bob: Please update the navbar. (2025-08-21)</li>
-    </ul>
+    <h3>Add Task</h3>
+    <form action="<%=request.getContextPath()%>/admin/addTask" method="post">
+        <label>Title:</label>
+        <input type="text" name="title" required /><br/>
+        <label>Description:</label>
+        <textarea name="description"></textarea><br/>
+        <label>User Email:</label>
+        <input type="email" name="assignedUser.email" required /><br/>
+        <label>Start Date:</label>
+        <input type="date" name="startDate" required /><br/>
+        <label>Due Date:</label>
+        <input type="date" name="dueDate" required /><br/>
+        <button type="submit">Add Task</button>
+    </form>
 </div>
-
 </body>
 </html>
